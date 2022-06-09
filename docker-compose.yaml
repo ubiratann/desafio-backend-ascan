@@ -1,5 +1,4 @@
 version: "3.9"
-
 services:  
   mysql:
     image: mysql:latest
@@ -12,9 +11,7 @@ services:
       - '3306'
     volumes:
       - db:/var/lib/mysql
-      - ./scripts/schemas.sql:/docker-entrypoint-initdb.d/init.sql
-    command: ["mysqld", "--init-file=/docker-entrypoint-initdb.d/init.sql"]
-  
+      - ./database/schemas.sql:/docker-entrypoint-initdb.d/init.sql
 volumes:
   db:
     driver: local
