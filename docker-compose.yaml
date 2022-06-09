@@ -2,6 +2,8 @@ version: "3.9"
 services:  
   mysql:
     image: mysql:latest
+    cap_add:
+      - "SYS_NICE"
     container_name: ascan_subscriptions_mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'p4ss@word'
