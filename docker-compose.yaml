@@ -4,6 +4,7 @@ services:
     image: mysql:latest
     cap_add:
       - "SYS_NICE"
+    restart: always
     container_name: ascan_subscriptions_mysql
     environment:
       MYSQL_ROOT_PASSWORD: 'p4ss@word'
