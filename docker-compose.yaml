@@ -1,0 +1,20 @@
+version: "3.9"
+services:  
+  mysql:
+    image: mysql:latest
+    cap_add:
+      - "SYS_NICE"
+    restart: always
+    container_name: ascan_subscriptions_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'p4ss@word'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - db:/var/lib/mysql
+      - ./database/schemas.sql:/docker-entrypoint-initdb.d/init.sql
+volumes:
+  db:
+    driver: local
