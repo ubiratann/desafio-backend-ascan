@@ -64,6 +64,29 @@ services:
       rabbitmq:
         condition: service_healthy
 
+  consumer:
+    container_name: "consumer"
+    build: consumer/.
+    image: consumer
+    environment:
+      #mysql
+      MYSQL_HOST: "mysql"
+      MYSQL_DATABASE: "subscriptions"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "p4ss@word"
+      #rabbitmq
+      RABBITMQ_HOST: "rabbitmq"
+      RABBITMQ_USER: "guest"
+      RABBITMQ_PASSWORD: "guest"
+    networks:
+      - rabbitmq_network
+      - mysql_network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mysql: 
+        condition: service_healthy
+
 networks:
   rabbitmq_network:
     name: rabbitmq_network
