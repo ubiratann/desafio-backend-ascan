@@ -1,0 +1,81 @@
+version: "3.9"
+services:  
+  mysql:
+    image: mysql:latest
+    cap_add:
+      - "SYS_NICE"
+    restart: always
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "p4ss@word"
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - db:/var/lib/mysql
+      - ./database/schemas.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mysql_network
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        interval: 10s
+        timeout: 10s
+        retries: 3
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: "rabbitmq"
+    ports:
+        - "5672:5672"
+        - "15672:15672"
+    volumes:
+        - rabbitmq_data:/var/lib/rabbitmq/
+        - rabbitmq_logs:/var/log/rabbitmq
+    networks:
+        - rabbitmq_network
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  producer:
+    container_name: "producer"
+    build: producer/.
+    image: producer
+    ports:
+      - "5000:5000"
+    expose:
+      - "5000"
+    environment:
+      ENVIRONMENT: "PROD"
+      #flask 
+      APPLICATION_HOST: "0.0.0.0"
+      APPLICATION_PORT: "5000"
+      API_VERSION: "v1"
+      #rabbitmq
+      RABBITMQ_HOST: "rabbitmq"
+      RABBITMQ_USER: "guest"
+      RABBITMQ_PASSWORD: "guest"
+    networks:
+      - rabbitmq_network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+networks:
+  rabbitmq_network:
+    name: rabbitmq_network
+    driver: bridge
+  mysql_network:
+    name: mysql_network
+    driver: bridge
+    
+volumes:
+  db:
+    driver: local
+  rabbitmq_data:
+    driver: local
+  rabbitmq_logs:
+    driver: local
