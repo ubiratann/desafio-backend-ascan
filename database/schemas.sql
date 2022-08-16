@@ -43,3 +43,6 @@ CREATE TABLE event_history(
         REFERENCES subscription(id)
         ON DELETE CASCADE
 );
+
+INSERT INTO status(status_name) VALUES ("ACTIVE"), ("CANCELED");
+INSERT INTO user(full_name) VALUES ("Admin");
