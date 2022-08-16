@@ -1,13 +1,13 @@
-DROP DATABASE IF EXISTS ascan_subscriptions;
+DROP DATABASE IF EXISTS subscriptions;
 
-CREATE DATABASE ascan_subscriptions;
+CREATE DATABASE subscriptions;
 
-USE ascan_subscriptions;
+USE subscriptions;
 
 CREATE TABLE user(
     id        INT NOT NULL AUTO_INCREMENT,
     full_name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
 
@@ -21,8 +21,8 @@ CREATE TABLE subscription(
     id         INT NOT NULL AUTO_INCREMENT,
     user_id    INT NOT NULL,
     status_id  INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NULL DEFAULT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(user_id) 
         REFERENCES user(id)
@@ -33,13 +33,16 @@ CREATE TABLE subscription(
 );
 
 
-CREATE TABLE event_hisotry(
+CREATE TABLE event_history(
     id              INT NOT NULL AUTO_INCREMENT,
     subscription_id INT NOT NULL,
     type            VARCHAR(255) NOT NULL,
-    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(id),
     FOREIGN KEY(subscription_id)
         REFERENCES subscription(id)
         ON DELETE CASCADE
 );
+
+INSERT INTO status(status_name) VALUES ("ACTIVE"), ("CANCELED");
+INSERT INTO user(full_name) VALUES ("Admin");
