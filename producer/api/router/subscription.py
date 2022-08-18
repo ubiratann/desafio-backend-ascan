@@ -20,7 +20,7 @@ QUEUE_RESTARTED = "RESTARTED"
 
 blueprint = Blueprint("subscriptions", __name__)
 
-@blueprint.route("/create", methods=["POST"])
+@blueprint.route("/", methods=["POST"])
 def create() :
     request_data = request.json
     schema       = CreateSubscriptionSchema()
