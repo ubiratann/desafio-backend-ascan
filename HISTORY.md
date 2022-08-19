@@ -13,7 +13,7 @@ A API estará disponível na porta 5000 do seu host local.
 
 Os seguintes endpoints estão disponívels
 
-`POST`:`<host>/ap1/v1/subscriptions`
+`POST`:`<host>/api/v1/subscriptions`
 
 Esse endpoint necessita que um JSON seja passado no corpo da requisição com a seguinte estrutura
 
@@ -23,7 +23,7 @@ Esse endpoint necessita que um JSON seja passado no corpo da requisição com a 
 }
 ```
 
-`PUT`:`<host>/ap1/v1/subscriptions/:id/status`
+`PUT`:`<host>/api/v1/subscriptions/:id/status`
 
 Esse endpoint necessita que um JSON seja passado no corpo da requisição com a seguinte estrutura
 
