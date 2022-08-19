@@ -8,6 +8,7 @@ from pika.exceptions import AMQPError, AMQPConnectionError
 USER     = os.environ.get("RABBITMQ_USER", "guest")
 PASSWORD = os.environ.get("RABBITMQ_PASSWORD", "guest")
 HOST     = os.environ.get("RABBITMQ_HOST", "localhost")
+TIMEOUT  = int(os.environ.get("RESPONSE_TIMEOUT", "20"))
 
 class Connector:
     def __init__(self, queue_name, exchange_name, exchange_type) -> None:
@@ -41,14 +42,12 @@ class Connector:
                                    on_message_callback=self.on_response,
                                    auto_ack=True)
 
-        # self.connection.process_data_events(time_limit=None)
-
         self.response       = None
         self.correlation_id = None
 
     def on_response(self, chanel, method, properties, body):
         data = json.loads(body)
-        self.response = json.dumps(data, sort_keys=True)
+        self.response = json.dumps(data)
 
     def publish(self, message) -> None:
         self.corr_id = str(uuid.uuid4())
@@ -58,8 +57,7 @@ class Connector:
                                    body=json.dumps(message),
                                    properties=pika.BasicProperties(reply_to=self.callback_queue,
                                                                    correlation_id=self.correlation_id))
-        while self.response is None:
-                self.connection.process_data_events(time_limit=None)
+        self.connection.process_data_events(time_limit=TIMEOUT)
                 
         return self.response
     

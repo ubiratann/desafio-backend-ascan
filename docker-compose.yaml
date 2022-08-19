@@ -4,7 +4,6 @@ services:
     image: mysql:latest
     cap_add:
       - "SYS_NICE"
-    restart: always
     container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "p4ss@word"
@@ -43,7 +42,6 @@ services:
   producer:
     container_name: "producer"
     build: producer/.
-    image: producer
     ports:
       - "5000:5000"
     expose:
@@ -63,11 +61,11 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    restart: always
 
   consumer:
     container_name: "consumer"
     build: consumer/.
-    image: consumer
     environment:
       #mysql
       MYSQL_HOST: "mysql"
@@ -86,6 +84,8 @@ services:
         condition: service_healthy
       mysql: 
         condition: service_healthy
+    restart: always
+
 
 networks:
   rabbitmq_network:
