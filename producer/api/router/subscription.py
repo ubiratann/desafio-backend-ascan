@@ -9,7 +9,7 @@ from marshmallow import Schema, ValidationError
 from pika.exceptions import AMQPError
 
 from api.schema.subscription import CreateSubscriptionSchema, UpdateSubscriptionStatusSchema
-from api.service.connector import Connector
+from api.service.connector import TIMEOUT, Connector
 
 DEFAULT_EXCHANGE = "SUBSCRIPTION"
 DEFAULT_EXCHANGE_TYPE = "direct"
@@ -75,6 +75,10 @@ def index():
 def send_request(request: Any, producer: Connector) -> None:
     try:
         response = producer.publish(request)
+        
+        if (response == None):
+            return Response(response=json.dumps("The server did not send a response"), status=HTTPStatus.REQUEST_TIMEOUT)
+        
         return Response(response=json.dumps(response), status=HTTPStatus.OK)
 
     except AMQPError as err:
