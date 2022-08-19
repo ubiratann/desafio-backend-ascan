@@ -76,7 +76,7 @@ def callback(chanel, method, properties, body) -> None:
     connection = DatabaseConnector() 
     cursor     = connection.get_cursor()
     event_type = method.routing_key
-    request    = ast.literal_eval(body.decode("UTF-8"))
+    request    = json.loads(body.decode("UTF-8"))
 
     OPERATION   = EVENTS[event_type]["OPERATION"]
     STATUS_NAME = EVENTS[event_type]["STATUS_NAME"]
